@@ -1,0 +1,9 @@
+name: 'zomato_dbt'
+version: '1.0.0'
+config-version: 2
+
+# This tells dbt which profile to use to connect to the database
+profile: 'zomato_dbt'
+
+# This tells dbt to look in the 'models' folder for SQL files
+model-paths: ["models"]

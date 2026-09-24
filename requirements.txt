@@ -1,0 +1,7 @@
+streamlit==1.31.0
+duckdb==0.10.0
+groq==0.4.2
+python-dotenv==1.0.0
+plotly==5.19.0
+pandas==2.2.0
+streamlit-option-menu==0.3.12

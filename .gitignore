@@ -1,0 +1,8 @@
+﻿.env
+zomato.duckdb
+data/
+logs/
+target/
+__pycache__/
+*.pyc
+.streamlit/
