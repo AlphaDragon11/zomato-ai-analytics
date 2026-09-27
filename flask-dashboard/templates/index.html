@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zomato Analytics</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥘</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ============================== SIDEBAR ============================== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M4 3v9a4 4 0 0 0 8 0V3M4 3h8M18 3v18M14 8h8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </span>
+      <div class="brand-text">
+        <span class="brand-name">Zomato</span>
+        <span class="brand-sub">Analytics</span>
+      </div>
+    </div>
+
+    <nav class="nav" id="nav">
+      <button class="nav-item is-active" data-page="overview">
+        <svg viewBox="0 0 24 24"><path d="M3 13h4v8H3zM10 3h4v18h-4zM17 8h4v13h-4z"/></svg>
+        <span>Overview</span>
+      </button>
+      <button class="nav-item" data-page="analytics">
+        <svg viewBox="0 0 24 24"><path d="M3 3v18h18M7 15l3-4 3 3 5-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Analytics</span>
+      </button>
+      <button class="nav-item" data-page="sentiment">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>Sentiment</span>
+      </button>
+      <button class="nav-item" data-page="chatbot">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16v12H8l-4 4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        <span>AI Chatbot</span>
+      </button>
+      <button class="nav-item" data-page="explorer">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 9h18M9 9v11" stroke="currentColor" stroke-width="2"/></svg>
+        <span>Data Explorer</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div class="status-row" id="db-status">
+        <span class="dot dot-pending"></span>
+        <span>Checking database…</span>
+      </div>
+      <div class="status-row" id="ai-status">
+        <span class="dot dot-pending"></span>
+        <span>Checking AI engine…</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============================== MAIN ============================== -->
+  <div class="main">
+
+    <header class="topbar">
+      <div>
+        <h1 id="page-title">Executive Overview</h1>
+        <p id="page-subtitle">High-level KPIs and business performance at a glance</p>
+      </div>
+      <div class="topbar-right">
+        <span class="clock" id="clock"></span>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- ===================== OVERVIEW ===================== -->
+      <section class="page is-active" data-page="overview">
+
+        <div class="kpi-row" id="kpi-row">
+          <div class="kpi-tile kpi-featured">
+            <span class="kpi-label">Total Revenue</span>
+            <span class="kpi-value" id="kpi-revenue">—</span>
+            <span class="kpi-foot">across all recorded orders</span>
+          </div>
+          <div class="kpi-tile">
+            <span class="kpi-label">Total Orders</span>
+            <span class="kpi-value" id="kpi-orders">—</span>
+            <span class="kpi-foot">lifetime volume</span>
+          </div>
+          <div class="kpi-tile">
+            <span class="kpi-label">Restaurants</span>
+            <span class="kpi-value" id="kpi-restaurants">—</span>
+            <span class="kpi-foot">active on platform</span>
+          </div>
+          <div class="kpi-tile">
+            <span class="kpi-label">Avg Rating</span>
+            <span class="kpi-value" id="kpi-rating">—</span>
+            <span class="kpi-foot">out of 5.0</span>
+          </div>
+        </div>
+
+        <div class="grid grid-primary">
+          <div class="card card-primary">
+            <div class="card-head">
+              <h3>Top 10 Cities by Revenue</h3>
+              <span class="card-tag">Revenue</span>
+            </div>
+            <div class="chart-wrap"><canvas id="chart-top-cities"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Top 10 Restaurants</h3></div>
+            <div class="chart-wrap chart-wrap-tall"><canvas id="chart-top-restaurants"></canvas></div>
+          </div>
+        </div>
+
+        <div class="grid grid-halves">
+          <div class="card">
+            <div class="card-head"><h3>Revenue Share by City</h3></div>
+            <div class="chart-wrap"><canvas id="chart-revenue-share"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Orders vs Revenue</h3></div>
+            <div class="chart-wrap"><canvas id="chart-orders-revenue"></canvas></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3>Detailed Restaurant Performance</h3></div>
+          <div class="table-wrap"><table id="table-overview"></table></div>
+        </div>
+      </section>
+
+      <!-- ===================== ANALYTICS ===================== -->
+      <section class="page" data-page="analytics">
+
+        <div class="filter-bar">
+          <label class="field">
+            <span>Time period</span>
+            <select id="f-period">
+              <option value="all">All time</option>
+              <option value="monthly">Monthly</option>
+              <option value="yearly">Yearly</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Min revenue (₹)</span>
+            <input type="number" id="f-min-revenue" value="0" step="50000" min="0">
+          </label>
+          <label class="field">
+            <span>Sort by</span>
+            <select id="f-sort">
+              <option value="revenue">Revenue</option>
+              <option value="orders">Orders</option>
+              <option value="city">City name</option>
+            </select>
+          </label>
+          <label class="field field-range">
+            <span>Records <b id="f-limit-value">20</b></span>
+            <input type="range" id="f-limit" min="10" max="100" value="20" step="5">
+          </label>
+        </div>
+
+        <div class="kpi-row kpi-row-3" id="analytics-kpis">
+          <div class="kpi-tile">
+            <span class="kpi-label">Revenue (selected)</span>
+            <span class="kpi-value" id="a-kpi-revenue">—</span>
+          </div>
+          <div class="kpi-tile">
+            <span class="kpi-label">Orders (selected)</span>
+            <span class="kpi-value" id="a-kpi-orders">—</span>
+          </div>
+          <div class="kpi-tile">
+            <span class="kpi-label">Avg order value</span>
+            <span class="kpi-value" id="a-kpi-aov">—</span>
+          </div>
+        </div>
+
+        <div class="grid grid-halves" id="analytics-charts">
+          <div class="card">
+            <div class="card-head"><h3 id="a-chart1-title">Revenue Trend</h3></div>
+            <div class="chart-wrap"><canvas id="chart-analytics-1"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3 id="a-chart2-title">Orders Volume</h3></div>
+            <div class="chart-wrap"><canvas id="chart-analytics-2"></canvas></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3>Breakdown</h3></div>
+          <div class="table-wrap"><table id="table-analytics"></table></div>
+        </div>
+      </section>
+
+      <!-- ===================== SENTIMENT ===================== -->
+      <section class="page" data-page="sentiment">
+
+        <div class="subtabs" id="sentiment-subtabs">
+          <button class="subtab is-active" data-sub="dashboard">Dashboard</button>
+          <button class="subtab" data-sub="topics">Topic Analysis</button>
+        </div>
+
+        <div class="subpage is-active" data-sub="dashboard">
+          <div class="kpi-row kpi-row-3">
+            <div class="kpi-tile kpi-positive">
+              <span class="kpi-label">Positive</span>
+              <span class="kpi-value" id="sent-positive">—</span>
+            </div>
+            <div class="kpi-tile kpi-negative">
+              <span class="kpi-label">Negative</span>
+              <span class="kpi-value" id="sent-negative">—</span>
+            </div>
+            <div class="kpi-tile kpi-neutral">
+              <span class="kpi-label">Neutral</span>
+              <span class="kpi-value" id="sent-neutral">—</span>
+            </div>
+          </div>
+
+          <div id="sentiment-empty" class="empty-state" style="display:none">
+            <p>No sentiment data found yet.</p>
+            <code>python enrich_reviews.py</code>
+            <p class="empty-sub"><span id="sent-raw-count">0</span> raw reviews are waiting to be analyzed.</p>
+          </div>
+
+          <div class="grid grid-halves" id="sentiment-grid">
+            <div class="card">
+              <div class="card-head"><h3>Sentiment Distribution</h3></div>
+              <div class="chart-wrap"><canvas id="chart-sentiment"></canvas></div>
+            </div>
+            <div class="card">
+              <div class="card-head"><h3>Recent Reviews</h3></div>
+              <div class="review-list" id="review-list"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="subpage" data-sub="topics">
+          <div class="card">
+            <div class="card-head"><h3>Top Topics Mentioned</h3></div>
+            <div class="chart-wrap chart-wrap-tall"><canvas id="chart-topics"></canvas></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== AI CHATBOT ===================== -->
+      <section class="page" data-page="chatbot">
+        <div class="chat-shell">
+          <div class="chat-messages" id="chat-messages"></div>
+
+          <div class="chat-suggestions" id="chat-suggestions">
+            <button class="chip">Show top 5 cities by revenue</button>
+            <button class="chip">How many total restaurants are there?</button>
+            <button class="chip">What is the average order value?</button>
+          </div>
+
+          <form class="chat-input-row" id="chat-form">
+            <input type="text" id="chat-input" placeholder="Ask a question about the data…" autocomplete="off">
+            <button type="submit" class="send-btn" aria-label="Send">
+              <svg viewBox="0 0 24 24"><path d="M4 12l16-8-6 8 6 8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- ===================== DATA EXPLORER ===================== -->
+      <section class="page" data-page="explorer">
+
+        <div class="subtabs" id="explorer-subtabs">
+          <button class="subtab is-active" data-sub="restaurants">Restaurants</button>
+          <button class="subtab" data-sub="orders">Orders</button>
+          <button class="subtab" data-sub="reviews">Reviews</button>
+        </div>
+
+        <div class="subpage is-active" data-sub="restaurants">
+          <div class="filter-bar">
+            <label class="field field-grow">
+              <span>Search restaurant</span>
+              <input type="text" id="r-search" placeholder="Type a name…">
+            </label>
+            <label class="field field-range">
+              <span>Min rating <b id="r-rating-value">0.0</b></span>
+              <input type="range" id="r-rating" min="0" max="5" step="0.1" value="0">
+            </label>
+          </div>
+          <p class="result-count"><span id="r-count">0</span> restaurants matched</p>
+          <div class="card"><div class="table-wrap"><table id="table-restaurants"></table></div></div>
+        </div>
+
+        <div class="subpage" data-sub="orders">
+          <div class="filter-bar">
+            <label class="field field-grow">
+              <span>Cities</span>
+              <select id="o-cities" multiple></select>
+            </label>
+            <label class="field">
+              <span>Min orders</span>
+              <input type="number" id="o-min-orders" value="0" min="0">
+            </label>
+            <label class="field">
+              <span>Min revenue</span>
+              <input type="number" id="o-min-revenue" value="0" min="0">
+            </label>
+          </div>
+          <p class="result-count"><span id="o-count">0</span> records matched</p>
+          <div class="card"><div class="table-wrap"><table id="table-orders"></table></div></div>
+        </div>
+
+        <div class="subpage" data-sub="reviews">
+          <p class="result-count" id="reviews-source-note"></p>
+          <div class="card"><div class="table-wrap"><table id="table-reviews"></table></div></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/vendor/chart.umd.js') }}"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
